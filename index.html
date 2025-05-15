@@ -1,262 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Rachel & Zach's Lisbon Bar Crawl</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-  * {
-    box-sizing: border-box;
-  }
-  body, html {
-    margin: 0; padding: 0; height: 100%;
-    font-family: 'Montserrat', sans-serif;
-    color: #fff;
-    background: #000;
-    overflow: hidden;
-  }
-  .background-slideshow {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: -1;
-  }
-  .background-slideshow img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
-  }
-  .background-slideshow img.active {
-    opacity: 1;
-  }
-  .overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.55);
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 2rem;
-    overflow-y: auto;
-  }
-  h1 {
-    margin-bottom: 0.2rem;
-    font-weight: 700;
-    font-size: 2.5rem;
-    text-align: center;
-  }
-  .time-now {
-    text-align: center;
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    letter-spacing: 1px;
-    font-weight: 600;
-  }
-  .progress-bar-container {
-    width: 100%;
-    background: rgba(255,255,255,0.2);
-    height: 12px;
-    border-radius: 6px;
-    margin-bottom: 2rem;
-    overflow: hidden;
-  }
-  .progress-bar {
-    height: 100%;
-    width: 0%;
-    background: #FF6F61;
-    transition: width 1s linear;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 2rem;
-  }
-  th, td {
-    padding: 12px 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-  }
-  th {
-    text-align: left;
-    font-weight: 700;
-    font-size: 1.1rem;
-  }
-  td.time, td.distance {
-    width: 80px;
-    font-weight: 600;
-    text-align: center;
-  }
-  td.description {
-    font-weight: 400;
-  }
-  .past {
-    color: rgba(255,255,255,0.4);
-    text-decoration: line-through;
-  }
-  .current {
-    background: rgba(255, 111, 97, 0.2);
-  }
-  footer {
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.5);
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-  @media (max-width: 600px) {
-    h1 {
-      font-size: 1.8rem;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rachel & Zach’s Lisbon Crawl</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
     }
-    th, td {
-      font-size: 0.9rem;
-      padding: 8px 6px;
+    header {
+      background-color: #222;
+      color: white;
+      padding: 1rem;
+      text-align: center;
     }
-  }
-</style>
+    .progress-container {
+      width: 100%;
+      background-color: #ddd;
+      height: 10px;
+    }
+    .progress-bar {
+      width: 0%;
+      height: 10px;
+      background-color: #4CAF50;
+    }
+    .countdown {
+      text-align: center;
+      margin: 1rem 0;
+      font-size: 1.2rem;
+      color: #d9534f;
+    }
+    .stop {
+      background: white;
+      margin: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .stop h2 {
+      margin: 0 0 0.5rem;
+    }
+    .stop p {
+      margin: 0.2rem 0;
+    }
+    .btn {
+      display: block;
+      margin: 1rem auto;
+      background: #007BFF;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-<div class="background-slideshow">
-  <img src="https://images.unsplash.com/photo-1516685018646-5495d4926fbb?auto=format&fit=crop&w=1920&q=80" class="active" alt="Lisbon Rooftops" />
-  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80" alt="Miradouro São Pedro de Alcântara" />
-  <img src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29?auto=format&fit=crop&w=1920&q=80" alt="Tagus River Sunset" />
-  <img src="https://images.unsplash.com/photo-1510227272981-87123e259b17?auto=format&fit=crop&w=1920&q=80" alt="Bairro Alto" />
-  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80" alt="Ribeira das Naus" />
-</div>
-
-<div class="overlay">
-  <h1>Rachel & Zach's Lisbon Bar Crawl</h1>
-  <div class="time-now" id="current-time">Loading current time...</div>
-  <div class="progress-bar-container">
+  <header>
+    <h1>Rachel & Zach’s Lisbon Crawl</h1>
+    <p>Sept 23, 2025 – Starts at 1:00 PM (Lisbon time)</p>
+  </header>
+  <div class="progress-container">
     <div class="progress-bar" id="progress-bar"></div>
   </div>
-  <table id="itinerary-table">
-    <thead>
-      <tr>
-        <th>Time</th>
-        <th>Stop</th>
-        <th>Description</th>
-        <th>Walk (mi)</th>
-        <th>Time at Stop</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-  <footer>Event time zone: Lisbon (GMT+1/2)</footer>
-</div>
+  <button class="btn" onclick="startCrawl()">Start Now</button>
+  <div class="countdown" id="countdown">Press Start to begin countdown</div>
+  <div id="stops"></div>
+  
+  <script>
+    const eventDate = new Date("2025-09-23T13:00:00+01:00");
+    const stops = [
+      { time: "13:00", name: "Rossio Gastrobar", description: "Kick off with a welcome drink on a rooftop terrace. Great views of downtown.", distance: "0.2 mi", duration: 45 },
+      { time: "13:50", name: "Praça da Figueira & Rossio Square", description: "Explore Lisbon’s bustling historical squares.", distance: "0.1 mi", duration: 15 },
+      { time: "14:10", name: "Manteigaria (Pastel de Nata)", description: "Grab Lisbon’s best custard tart—quick, warm, and unforgettable.", distance: "0.5 mi", duration: 15 },
+      { time: "14:35", name: "Rua Augusta Arch & Praça do Comércio", description: "Walk through Lisbon’s grand pedestrian street down to the waterfront arch.", distance: "0.6 mi", duration: 30 },
+      { time: "15:20", name: "Miradouro das Portas do Sol", description: "Iconic viewpoint over Alfama’s rooftops and the Tagus River.", distance: "0.6 mi uphill", duration: 30 },
+      { time: "16:05", name: "Lumi Rooftop Bar", description: "Relax with a drink at this scenic spot with 360° views.", distance: "0.4 mi", duration: 45 },
+      { time: "16:55", name: "Miradouro de São Pedro de Alcântara", description: "Panoramic views of the city, castle, and a great spot for photos.", distance: "0.5 mi", duration: 25 },
+      { time: "17:35", name: "Scenic Walk through Bairro Alto", description: "Leisurely stroll through Lisbon’s artistic and historic neighborhood.", distance: "0.4 mi", duration: 20 },
+      { time: "18:00", name: "Quiosque Ribeira das Naus", description: "Sunset drink along the water—golden hour magic.", distance: "0.2 mi", duration: 50 },
+      { time: "18:55", name: "Time Out Market", description: "Dinner at 7:00 PM—choose from the city’s best vendors under one roof.", distance: "—", duration: 65 }
+    ];
 
-<script>
-  // Itinerary data
-  const itinerary = [
-    { time: "1:00 PM", stop: "Rossio Gastrobar", description: "Kick off with a welcome drink on a rooftop terrace. Great views of downtown.", walk: "0.2", duration: 45 },
-    { time: "1:50 PM", stop: "Praça da Figueira & Rossio Square", description: "Explore Lisbon’s bustling historical squares.", walk: "0.1", duration: 15 },
-    { time: "2:10 PM", stop: "Manteigaria (Pastel de Nata)", description: "Grab Lisbon’s best custard tart—quick, warm, and unforgettable.", walk: "0.5", duration: 15 },
-    { time: "2:35 PM", stop: "Rua Augusta Arch & Praça do Comércio", description: "Walk through Lisbon’s grand pedestrian street down to the waterfront arch.", walk: "0.6", duration: 30 },
-    { time: "3:20 PM", stop: "Miradouro das Portas do Sol", description: "Iconic viewpoint over Alfama’s rooftops and the Tagus River.", walk: "0.6", duration: 30 },
-    { time: "4:05 PM", stop: "Lumi Rooftop Bar", description: "Relax with a drink at this scenic spot with 360° views.", walk: "0.4", duration: 45 },
-    { time: "4:55 PM", stop: "Miradouro de São Pedro de Alcântara", description: "Panoramic views of the city, castle, and a great spot for photos.", walk: "0.5", duration: 25 },
-    { time: "5:35 PM", stop: "Scenic Walk through Bairro Alto", description: "Leisurely stroll through Lisbon’s artistic and historic neighborhood.", walk: "0.4", duration: 20 },
-    { time: "6:00 PM", stop: "Quiosque Ribeira das Naus", description: "Sunset drink along the water—golden hour magic.", walk: "0.2", duration: 50 },
-    { time: "6:55 PM", stop: "Time Out Market", description: "Dinner at 7:00 PM—choose from the city’s best vendors under one roof.", walk: "-", duration: null }
-  ];
-
-  // Parse time helper (Lisbon time)
-  function parseLisbonTime(timeStr) {
-    const [time, meridian] = timeStr.split(' ');
-    let [hour, minute] = time.split(':').map(Number);
-    if (meridian === "PM" && hour !== 12) hour += 12;
-    if (meridian === "AM" && hour === 12) hour = 0;
-    // Create date in Lisbon timezone (using Intl API)
-    const now = new Date();
-    // Construct date string for today in Lisbon time (Europe/Lisbon)
-    const lisbonDateStr = now.toLocaleDateString("en-GB", {timeZone: "Europe/Lisbon"});
-    const [day, month, year] = lisbonDateStr.split('/');
-    // Use Date.UTC for consistent parsing and then offset for timezone
-    return new Date(`${year}-${month}-${day}T${hour.toString().padStart(2,'0')}:${minute.toString().padStart(2,'0')}:00+01:00`);
-  }
-
-  // Initialize table with itinerary rows
-  const tbody = document.querySelector("#itinerary-table tbody");
-  itinerary.forEach(item => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td class="time">${item.time}</td>
-      <td class="stop">${item.stop}</td>
-      <td class="description">${item.description}</td>
-      <td class="distance">${item.walk}</td>
-      <td class="duration">${item.duration !== null ? item.duration + ' min' : ''}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  // Background slideshow logic
-  const slides = document.querySelectorAll(".background-slideshow img");
-  let currentSlide = 0;
-  function nextSlide() {
-    slides[currentSlide].classList.remove("active");
-    currentSlide = (currentSlide + 1) % slides.length;
-    slides[currentSlide].classList.add("active");
-  }
-  setInterval(nextSlide, 10000); // Change image every 10 seconds
-
-  // Main countdown and progress update
-  const progressBar = document.getElementById("progress-bar");
-  const currentTimeElem = document.getElementById("current-time");
-
-  function updateTimeAndProgress() {
-    // Current Lisbon time
-    const nowLisbon = new Date().toLocaleString("en-US", {timeZone: "Europe/Lisbon"});
-    const now = new Date(nowLisbon);
-
-    // Display current time nicely
-    currentTimeElem.textContent = `Current time in Lisbon: ${now.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}`;
-
-    // Start time fixed at 1PM Lisbon today
-    const startTime = parseLisbonTime("1:00 PM");
-
-    // If it's before 1PM, show countdown until 1PM (optional)
-    if (now < startTime) {
-      progressBar.style.width = '0%';
-      return;
+    function renderStops() {
+      const container = document.getElementById("stops");
+      stops.forEach((stop, i) => {
+        const div = document.createElement("div");
+        div.className = "stop";
+        div.innerHTML = `
+          <h2>${stop.time} – ${stop.name}</h2>
+          <p><strong>Description:</strong> ${stop.description}</p>
+          <p><strong>To next:</strong> ${stop.distance}</p>
+          <p><strong>Time at stop:</strong> ${stop.duration} min</p>
+          <p><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(stop.name + ", Lisbon")}" target="_blank">📍 Google Maps</a></p>
+        `;
+        container.appendChild(div);
+      });
     }
 
-    // Calculate total event duration (last stop time + duration)
-    const lastItem = itinerary[itinerary.length - 1];
-    let lastStopEnd = parseLisbonTime(lastItem.time);
-    if (lastItem.duration) lastStopEnd = new Date(lastStopEnd.getTime() + lastItem.duration * 60000);
+    function startCrawl() {
+      const countdown = document.getElementById("countdown");
+      const progressBar = document.getElementById("progress-bar");
+      const now = new Date();
+      const timeDiff = now - eventDate;
 
-    // Clamp current time to event end
-    const eventEnd = lastStopEnd > startTime ? lastStopEnd : new Date(startTime.getTime() + 6 * 3600000);
-    const elapsed = Math.min(Math.max(now - startTime, 0), eventEnd - startTime);
-    const progressPercent = (elapsed / (eventEnd - startTime)) * 100;
+      let total = 0;
+      let passed = 0;
 
-    // Update progress bar
-    progressBar.style.width = progressPercent + "%";
+      stops.forEach(stop => total += stop.duration);
 
-    // Update table rows for past/current
-    const rows = tbody.querySelectorAll("tr");
-    itinerary.forEach((item, idx) => {
-      const row = rows[idx];
-      const stopTime = parseLisbonTime(item.time);
-      let stopEnd = stopTime;
-      if (item.duration) stopEnd = new Date(stopTime.getTime() + item.duration * 60000);
+      let minutes = Math.floor(timeDiff / 60000);
+      let i = 0;
 
-      if (now >= stopEnd) {
-        row.classList.add("past");
-        row.classList.remove("current");
-      } else if (now >= stopTime && now < stopEnd) {
-        row.classList.add("current");
-        row.classList.remove("past");
-      } else {
-        row.classList.remove("past", "current");
+      while (i < stops.length && minutes >= stops[i].duration) {
+        minutes -= stops[i].duration;
+        passed += stops[i].duration;
+        i++;
       }
-    });
-  }
 
-  // Run every second
-  updateTimeAndProgress();
-  setInterval(updateTimeAndProgress, 1000);
-</script>
+      if (i >= stops.length) {
+        countdown.innerText = "🍽️ You're at the final stop! Enjoy dinner!";
+        progressBar.style.width = "100%";
+        return;
+      }
+
+      const remaining = stops[i].duration - minutes;
+      countdown.innerText = `Next stop: ${stops[i].name} in ${remaining} min`;
+      const percent = Math.round((passed + minutes) / total * 100);
+      progressBar.style.width = percent + "%";
+    }
+
+    renderStops();
+  </script>
 </body>
 </html>
