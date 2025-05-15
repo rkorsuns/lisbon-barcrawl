@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rachel & Zach’s Lisbon Crawl</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+    header {
+      background-color: #222;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .progress-container {
+      width: 100%;
+      background-color: #ddd;
+      height: 10px;
+    }
+    .progress-bar {
+      width: 0%;
+      height: 10px;
+      background-color: #4CAF50;
+    }
+    .countdown {
+      text-align: center;
+      margin: 1rem 0;
+      font-size: 1.2rem;
+      color: #d9534f;
+    }
+    .stop {
+      background: white;
+      margin: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .stop h2 {
+      margin: 0 0 0.5rem;
+    }
+    .stop p {
+      margin: 0.2rem 0;
+    }
+    .btn {
+      display: block;
+      margin: 1rem auto;
+      background: #007BFF;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Rachel & Zach’s Lisbon Crawl</h1>
+    <p>Sept 23, 2025 – Starts at 1:00 PM (Lisbon time)</p>
+  </header>
+  <div class="progress-container">
+    <div class="progress-bar" id="progress-bar"></div>
+  </div>
+  <button class="btn" onclick="startCrawl()">Start Now</button>
+  <div class="countdown" id="countdown">Press Start to begin countdown</div>
+  <div id="stops"></div>
+  
+  <script>
+    const eventDate = new Date("2025-09-23T13:00:00+01:00");
+    const stops = [
+      { time: "13:00", name: "Rossio Gastrobar", description: "Kick off with a welcome drink on a rooftop terrace. Great views of downtown.", distance: "0.2 mi", duration: 45 },
+      { time: "13:50", name: "Praça da Figueira & Rossio Square", description: "Explore Lisbon’s bustling historical squares.", distance: "0.1 mi", duration: 15 },
+      { time: "14:10", name: "Manteigaria (Pastel de Nata)", description: "Grab Lisbon’s best custard tart—quick, warm, and unforgettable.", distance: "0.5 mi", duration: 15 },
+      { time: "14:35", name: "Rua Augusta Arch & Praça do Comércio", description: "Walk through Lisbon’s grand pedestrian street down to the waterfront arch.", distance: "0.6 mi", duration: 30 },
+      { time: "15:20", name: "Miradouro das Portas do Sol", description: "Iconic viewpoint over Alfama’s rooftops and the Tagus River.", distance: "0.6 mi uphill", duration: 30 },
+      { time: "16:05", name: "Lumi Rooftop Bar", description: "Relax with a drink at this scenic spot with 360° views.", distance: "0.4 mi", duration: 45 },
+      { time: "16:55", name: "Miradouro de São Pedro de Alcântara", description: "Panoramic views of the city, castle, and a great spot for photos.", distance: "0.5 mi", duration: 25 },
+      { time: "17:35", name: "Scenic Walk through Bairro Alto", description: "Leisurely stroll through Lisbon’s artistic and historic neighborhood.", distance: "0.4 mi", duration: 20 },
+      { time: "18:00", name: "Quiosque Ribeira das Naus", description: "Sunset drink along the water—golden hour magic.", distance: "0.2 mi", duration: 50 },
+      { time: "18:55", name: "Time Out Market", description: "Dinner at 7:00 PM—choose from the city’s best vendors under one roof.", distance: "—", duration: 65 }
+    ];
+
+    function renderStops() {
+      const container = document.getElementById("stops");
+      stops.forEach((stop, i) => {
+        const div = document.createElement("div");
+        div.className = "stop";
+        div.innerHTML = `
+          <h2>${stop.time} – ${stop.name}</h2>
+          <p><strong>Description:</strong> ${stop.description}</p>
+          <p><strong>To next:</strong> ${stop.distance}</p>
+          <p><strong>Time at stop:</strong> ${stop.duration} min</p>
+          <p><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(stop.name + ", Lisbon")}" target="_blank">📍 Google Maps</a></p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function startCrawl() {
+      const countdown = document.getElementById("countdown");
+      const progressBar = document.getElementById("progress-bar");
+      const now = new Date();
+      const timeDiff = now - eventDate;
+
+      let total = 0;
+      let passed = 0;
+
+      stops.forEach(stop => total += stop.duration);
+
+      let minutes = Math.floor(timeDiff / 60000);
+      let i = 0;
+
+      while (i < stops.length && minutes >= stops[i].duration) {
+        minutes -= stops[i].duration;
+        passed += stops[i].duration;
+        i++;
+      }
+
+      if (i >= stops.length) {
+        countdown.innerText = "🍽️ You're at the final stop! Enjoy dinner!";
+        progressBar.style.width = "100%";
+        return;
+      }
+
+      const remaining = stops[i].duration - minutes;
+      countdown.innerText = `Next stop: ${stops[i].name} in ${remaining} min`;
+      const percent = Math.round((passed + minutes) / total * 100);
+      progressBar.style.width = percent + "%";
+    }
+
+    renderStops();
+  </script>
+</body>
+</html>
