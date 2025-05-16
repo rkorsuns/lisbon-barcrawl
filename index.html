@@ -1,241 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Lisbon Wedding Itinerary</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-
-  body, html {
-    margin: 0; padding: 0; height: 100%;
-    font-family: 'Montserrat', sans-serif;
-    color: white;
-    overflow: hidden;
-  }
-
-  .background-slideshow {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    z-index: -1;
-  }
-
-  .background-slideshow img {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 1.5s ease-in-out;
-  }
-
-  .background-slideshow img.active {
-    opacity: 1;
-  }
-
-  /* LIGHT transparent overlay - lighter than before */
-  .overlay {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0.3); /* lighter black overlay */
-    z-index: 0;
-  }
-
-  .container {
-    position: relative;
-    z-index: 1;
-    max-width: 900px;
-    margin: 2rem auto;
-    background: rgba(0,0,0,0.5);
-    padding: 20px 30px;
-    border-radius: 8px;
-  }
-
-  h1 {
-    margin-top: 0;
-    font-weight: 700;
-    font-size: 2.8rem;
-    text-align: center;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-
-  th, td {
-    padding: 10px 12px;
-    text-align: left;
-  }
-
-  th {
-    background: rgba(255,255,255,0.15);
-  }
-
-  tbody tr.past {
-    color: #ccc;
-    text-decoration: line-through;
-  }
-
-  tbody tr.current {
-    background: rgba(255, 255, 255, 0.25);
-    font-weight: 700;
-  }
-
-  #progress-container {
-    background: rgba(255, 255, 255, 0.15);
-    height: 12px;
-    width: 100%;
-    border-radius: 6px;
-    margin-top: 20px;
-    overflow: hidden;
-  }
-
-  #progress-bar {
-    background: #f0a500;
-    height: 100%;
-    width: 0%;
-    transition: width 0.3s ease;
-  }
-
-  #current-time {
-    margin-top: 10px;
-    text-align: center;
-    font-weight: 600;
-    font-size: 1.1rem;
-  }
-</style>
-</head>
-<body>
-
-<div class="background-slideshow">
-  <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1920&q=80" alt="Lisbon 1" class="active" />
-  <img src="https://images.unsplash.com/photo-1526483360610-858a0f0bc6f1?auto=format&fit=crop&w=1920&q=80" alt="Lisbon 2" />
-  <img src="https://images.unsplash.com/photo-1502378735452-bc7d86632805?auto=format&fit=crop&w=1920&q=80" alt="Lisbon 3" />
-</div>
-
-<div class="overlay"></div>
-
-<div class="container">
-  <h1>Lisbon Wedding Itinerary</h1>
-  <table id="itinerary-table">
-    <thead>
-      <tr>
-        <th>Time</th>
-        <th>Stop</th>
-        <th>Description</th>
-        <th>Walk</th>
-        <th>Duration</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- rows will be injected here by JS -->
-    </tbody>
-  </table>
-
-  <div id="progress-container">
-    <div id="progress-bar"></div>
-  </div>
-  <div id="current-time"></div>
-</div>
-
-<script>
-  // Itinerary array (same as before)
-  const itinerary = [
-    { time: "1:00 PM", stop: "Hotel Arrival", description: "Guests arrive and check-in", walk: "0 min", duration: 30 },
-    { time: "1:30 PM", stop: "Welcome Drinks", description: "Cocktails and snacks", walk: "5 min", duration: 60 },
-    { time: "2:30 PM", stop: "Ceremony", description: "Wedding ceremony at the chapel", walk: "10 min", duration: 45 },
-    { time: "3:15 PM", stop: "Photo Session", description: "Couple and family photos", walk: "0 min", duration: 60 },
-    { time: "4:15 PM", stop: "Reception", description: "Dinner and celebration", walk: "5 min", duration: 180 },
-    { time: "7:15 PM", stop: "Dancing", description: "Music and dancing", walk: "0 min", duration: 120 },
-  ];
-
-  // Populate table rows
-  const tbody = document.querySelector("#itinerary-table tbody");
-  itinerary.forEach(item => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td class="time">${item.time}</td>
-      <td class="stop">${item.stop}</td>
-      <td class="description">${item.description}</td>
-      <td class="distance">${item.walk}</td>
-      <td class="duration">${item.duration !== null ? item.duration + ' min' : ''}</td>
-    `;
-    tbody.appendChild(tr);
-  });
-
-  // Background slideshow logic
-  const slides = document.querySelectorAll(".background-slideshow img");
-  let currentSlide = 0;
-  function nextSlide() {
-    slides[currentSlide].classList.remove("active");
-    currentSlide = (currentSlide + 1) % slides.length;
-    slides[currentSlide].classList.add("active");
-  }
-  setInterval(nextSlide, 10000); // Change image every 10 seconds
-
-  // Parse Lisbon time helper
-  function parseLisbonTime(timeStr) {
-    const now = new Date();
-    const [time, modifier] = timeStr.split(' ');
-    let [hours, minutes] = time.split(':').map(Number);
-    if (modifier === "PM" && hours !== 12) hours += 12;
-    if (modifier === "AM" && hours === 12) hours = 0;
-    const date = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Lisbon" }));
-    date.setHours(hours, minutes, 0, 0);
-    return date;
-  }
-
-  // Main countdown and progress update
-  const progressBar = document.getElementById("progress-bar");
-  const currentTimeElem = document.getElementById("current-time");
-
-  function updateTimeAndProgress() {
-    const nowLisbonStr = new Date().toLocaleString("en-US", {timeZone: "Europe/Lisbon"});
-    const nowLisbon = new Date(nowLisbonStr);
-
-    currentTimeElem.textContent = `Current time in Lisbon: ${nowLisbon.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})}`;
-
-    const startTime = parseLisbonTime("1:00 PM");
-
-    if (nowLisbon < startTime) {
-      progressBar.style.width = '0%';
-      return;
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rachel & Zach's Lisbon Crawl</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      color: #fff;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=1950&q=80') center/cover no-repeat fixed;
+      background-size: cover;
+      background-position: center;
     }
 
-    const lastItem = itinerary[itinerary.length - 1];
-    let lastStopEnd = parseLisbonTime(lastItem.time);
-    if (lastItem.duration) lastStopEnd = new Date(lastStopEnd.getTime() + lastItem.duration * 60000);
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      background-color: rgba(0,0,0,0.5);
+    }
 
-    const eventEnd = lastStopEnd > startTime ? lastStopEnd : new Date(startTime.getTime() + 6 * 3600000);
-    const elapsed = Math.min(Math.max(nowLisbon - startTime, 0), eventEnd - startTime);
-    const progressPercent = (elapsed / (eventEnd - startTime)) * 100;
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
 
-    progressBar.style.width = progressPercent + "%";
+    .container {
+      max-width: 900px;
+      margin: 2rem auto;
+      background: rgba(0,0,0,0.6);
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
 
-    const rows = tbody.querySelectorAll("tr");
-    itinerary.forEach((item, idx) => {
-      const row = rows[idx];
-      const stopTime = parseLisbonTime(item.time);
-      let stopEnd = stopTime;
-      if (item.duration) stopEnd = new Date(stopTime.getTime() + item.duration * 60000);
+    .stop {
+      border-bottom: 1px solid rgba(255,255,255,0.2);
+      padding: 1rem 0;
+    }
 
-      if (nowLisbon >= stopEnd) {
-        row.classList.add("past");
-        row.classList.remove("current");
-      } else if (nowLisbon >= stopTime && nowLisbon < stopEnd) {
-        row.classList.add("current");
-        row.classList.remove("past");
+    .stop:last-child {
+      border-bottom: none;
+    }
+
+    .stop h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .stop p {
+      margin: 0.25rem 0;
+      font-weight: 300;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.9rem;
+      margin-top: 2rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .countdown {
+      font-size: 1.2rem;
+      text-align: center;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Rachel & Zach's Lisbon Crawl</h1>
+    <div class="countdown" id="countdown"></div>
+  </header>
+
+  <div class="container" id="itinerary"></div>
+
+  <div class="footer">
+    Made with ❤️ for Lisbon · All times local (WEST)
+  </div>
+
+  <script>
+    const itinerary = [
+      { time: '13:00', stop: 'Rossio Gastrobar', description: 'Kick off with a welcome drink on a rooftop terrace. Great views of downtown.', walk: '0.2 mi', duration: '45 min' },
+      { time: '13:50', stop: 'Praça da Figueira & Rossio Square', description: 'Explore Lisbon’s bustling historical squares.', walk: '0.1 mi', duration: '15 min' },
+      { time: '14:10', stop: 'Manteigaria (Pastel de Nata)', description: 'Grab Lisbon’s best custard tart—quick, warm, and unforgettable.', walk: '0.5 mi', duration: '15 min' },
+      { time: '14:35', stop: 'Rua Augusta Arch & Praça do Comércio', description: 'Walk through Lisbon’s grand pedestrian street down to the waterfront arch.', walk: '0.6 mi', duration: '30 min' },
+      { time: '15:20', stop: 'Miradouro das Portas do Sol', description: 'Iconic viewpoint over Alfama’s rooftops and the Tagus River.', walk: '0.6 mi uphill', duration: '30 min' },
+      { time: '16:05', stop: 'Lumi Rooftop Bar', description: 'Relax with a drink at this scenic spot with 360° views.', walk: '0.4 mi', duration: '45 min' },
+      { time: '16:55', stop: 'Miradouro de São Pedro de Alcântara', description: 'Panoramic views of the city, castle, and a great spot for photos.', walk: '0.5 mi', duration: '25 min' },
+      { time: '17:35', stop: 'Scenic Walk through Bairro Alto', description: 'Leisurely stroll through Lisbon’s artistic and historic neighborhood.', walk: '0.4 mi', duration: '20 min' },
+      { time: '18:00', stop: 'Quiosque Ribeira das Naus', description: 'Sunset drink along the water—golden hour magic.', walk: '0.2 mi', duration: '50 min' },
+      { time: '18:55', stop: 'Time Out Market', description: 'Dinner at 7:00 PM—choose from the city’s best vendors under one roof.', walk: '—', duration: 'Until end' }
+    ];
+
+    const itineraryDiv = document.getElementById('itinerary');
+    const now = new Date();
+
+    function renderItinerary() {
+      itinerary.forEach(item => {
+        const stopTime = parseInt(item.time.split(':')[0]) * 60 + parseInt(item.time.split(':')[1]);
+        const nowTime = now.getHours() * 60 + now.getMinutes();
+        const isPast = stopTime < nowTime;
+
+        const stopEl = document.createElement('div');
+        stopEl.className = 'stop';
+        stopEl.style.opacity = isPast ? '0.4' : '1';
+
+        stopEl.innerHTML = `
+          <h2>${item.time} – ${item.stop}</h2>
+          <p>${item.description}</p>
+          <p><strong>Walk to next:</strong> ${item.walk} · <strong>Time at stop:</strong> ${item.duration}</p>
+        `;
+        itineraryDiv.appendChild(stopEl);
+      });
+    }
+
+    function updateCountdown() {
+      const lisbonTime = new Date();
+      lisbonTime.setUTCHours(13, 0, 0, 0); // 1pm Lisbon is 12pm UTC in Sept
+      const now = new Date();
+      const diff = lisbonTime - now;
+
+      const countdown = document.getElementById('countdown');
+      if (diff > 0) {
+        const mins = Math.floor(diff / 60000);
+        const secs = Math.floor((diff % 60000) / 1000);
+        countdown.textContent = `Starts in ${mins}m ${secs}s`;
+        setTimeout(updateCountdown, 1000);
       } else {
-        row.classList.remove("past", "current");
+        countdown.textContent = `In progress!`;
       }
-    });
-  }
+    }
 
-  updateTimeAndProgress();
-  setInterval(updateTimeAndProgress, 1000);
-</script>
-
+    renderItinerary();
+    updateCountdown();
+  </script>
 </body>
 </html>
