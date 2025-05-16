@@ -21,16 +21,23 @@
         scroll-behavior: smooth;
       }
       header {
-        background-image: url('https://drive.google.com/file/d/1uuZD82AEV7hYR5Uuo7iux0Wf5PM6lr-g/view?usp=sharing');
-        background-size: cover;
-        background-position: center;
+        position: relative;
         height: 60vh;
+        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         text-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        position: relative;
+      }
+      header video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: 0;
       }
       header::after {
         content: "";
@@ -119,6 +126,12 @@
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         font-size: 1rem;
       }
+      .time-display {
+        text-align: center;
+        margin-top: 1rem;
+        font-size: 0.95rem;
+        color: #666;
+      }
       @media screen and (max-width: 600px) {
         header h1 {
           font-size: 1.8rem;
@@ -132,12 +145,18 @@
   </head>
   <body>
     <header>
+      <video autoplay muted loop playsinline>
+        <source src="https://cdn.coverr.co/videos/coverr-lisbon-streetscape-1234/1080p.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
       <h1>Rachel & Zach's Lisbon Crawl</h1>
     </header>
 
     <div class="summary-box">
       We’ll be walking ~3.6 miles throughout the crawl (bring comfy shoes!) and have two drink stops + one dinner.
     </div>
+
+    <div class="time-display" id="timeDisplay"></div>
 
     <div class="timeline" id="timeline"></div>
 
@@ -212,6 +231,7 @@
       ];
 
       const timeline = document.getElementById("timeline");
+      const timeDisplay = document.getElementById("timeDisplay");
 
       function parseTimeToMinutes(timeStr) {
         const [hours, minutes] = timeStr.split(":" ).map(Number);
@@ -226,9 +246,18 @@
         return lisbonTime.getHours() * 60 + lisbonTime.getMinutes();
       }
 
+      function getCurrentLisbonTimeString() {
+        const now = new Date();
+        const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+        const lisbonOffset = 1;
+        const lisbonTime = new Date(utc + 3600000 * lisbonOffset);
+        return lisbonTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      }
+
       function renderTimeline() {
         const nowMinutes = getCurrentLisbonTimeInMinutes();
         timeline.innerHTML = "";
+        timeDisplay.innerText = `Current Lisbon time: ${getCurrentLisbonTimeString()}`;
 
         stops.forEach((stop) => {
           const stopMinutes = parseTimeToMinutes(stop.time);
