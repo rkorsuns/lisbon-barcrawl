@@ -1,142 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rachel & Zach's Lisbon Crawl</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;600&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Outfit', sans-serif;
-      color: #fff;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=1950&q=80') center/cover no-repeat fixed;
-      background-size: cover;
-      background-position: center;
-    }
-
-    header {
-      text-align: center;
-      padding: 2rem 1rem;
-      background-color: rgba(0,0,0,0.5);
-    }
-
-    header h1 {
-      font-size: 2.5rem;
-      font-weight: 600;
-      margin: 0;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 2rem auto;
-      background: rgba(0,0,0,0.6);
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-    }
-
-    .stop {
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-      padding: 1rem 0;
-    }
-
-    .stop:last-child {
-      border-bottom: none;
-    }
-
-    .stop h2 {
-      margin: 0;
-      font-size: 1.3rem;
-      font-weight: 600;
-    }
-
-    .stop p {
-      margin: 0.25rem 0;
-      font-weight: 300;
-    }
-
-    .footer {
-      text-align: center;
-      font-size: 0.9rem;
-      margin-top: 2rem;
-      color: rgba(255,255,255,0.5);
-    }
-
-    .countdown {
-      font-size: 1.2rem;
-      text-align: center;
-      margin-top: 1rem;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Rachel & Zach's Lisbon Crawl</h1>
-    <div class="countdown" id="countdown"></div>
-  </header>
-
-  <div class="container" id="itinerary"></div>
-
-  <div class="footer">
-    Made with ❤️ for Lisbon · All times local (WEST)
-  </div>
-
-  <script>
-    const itinerary = [
-      { time: '13:00', stop: 'Rossio Gastrobar', description: 'Kick off with a welcome drink on a rooftop terrace. Great views of downtown.', walk: '0.2 mi', duration: '45 min' },
-      { time: '13:50', stop: 'Praça da Figueira & Rossio Square', description: 'Explore Lisbon’s bustling historical squares.', walk: '0.1 mi', duration: '15 min' },
-      { time: '14:10', stop: 'Manteigaria (Pastel de Nata)', description: 'Grab Lisbon’s best custard tart—quick, warm, and unforgettable.', walk: '0.5 mi', duration: '15 min' },
-      { time: '14:35', stop: 'Rua Augusta Arch & Praça do Comércio', description: 'Walk through Lisbon’s grand pedestrian street down to the waterfront arch.', walk: '0.6 mi', duration: '30 min' },
-      { time: '15:20', stop: 'Miradouro das Portas do Sol', description: 'Iconic viewpoint over Alfama’s rooftops and the Tagus River.', walk: '0.6 mi uphill', duration: '30 min' },
-      { time: '16:05', stop: 'Lumi Rooftop Bar', description: 'Relax with a drink at this scenic spot with 360° views.', walk: '0.4 mi', duration: '45 min' },
-      { time: '16:55', stop: 'Miradouro de São Pedro de Alcântara', description: 'Panoramic views of the city, castle, and a great spot for photos.', walk: '0.5 mi', duration: '25 min' },
-      { time: '17:35', stop: 'Scenic Walk through Bairro Alto', description: 'Leisurely stroll through Lisbon’s artistic and historic neighborhood.', walk: '0.4 mi', duration: '20 min' },
-      { time: '18:00', stop: 'Quiosque Ribeira das Naus', description: 'Sunset drink along the water—golden hour magic.', walk: '0.2 mi', duration: '50 min' },
-      { time: '18:55', stop: 'Time Out Market', description: 'Dinner at 7:00 PM—choose from the city’s best vendors under one roof.', walk: '—', duration: 'Until end' }
-    ];
-
-    const itineraryDiv = document.getElementById('itinerary');
-    const now = new Date();
-
-    function renderItinerary() {
-      itinerary.forEach(item => {
-        const stopTime = parseInt(item.time.split(':')[0]) * 60 + parseInt(item.time.split(':')[1]);
-        const nowTime = now.getHours() * 60 + now.getMinutes();
-        const isPast = stopTime < nowTime;
-
-        const stopEl = document.createElement('div');
-        stopEl.className = 'stop';
-        stopEl.style.opacity = isPast ? '0.4' : '1';
-
-        stopEl.innerHTML = `
-          <h2>${item.time} – ${item.stop}</h2>
-          <p>${item.description}</p>
-          <p><strong>Walk to next:</strong> ${item.walk} · <strong>Time at stop:</strong> ${item.duration}</p>
-        `;
-        itineraryDiv.appendChild(stopEl);
-      });
-    }
-
-    function updateCountdown() {
-      const lisbonTime = new Date();
-      lisbonTime.setUTCHours(13, 0, 0, 0); // 1pm Lisbon is 12pm UTC in Sept
-      const now = new Date();
-      const diff = lisbonTime - now;
-
-      const countdown = document.getElementById('countdown');
-      if (diff > 0) {
-        const mins = Math.floor(diff / 60000);
-        const secs = Math.floor((diff % 60000) / 1000);
-        countdown.textContent = `Starts in ${mins}m ${secs}s`;
-        setTimeout(updateCountdown, 1000);
-      } else {
-        countdown.textContent = `In progress!`;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rachel & Zach's Lisbon Crawl</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-    }
+      html, body {
+        font-family: 'Outfit', sans-serif;
+        background: #fff;
+        color: #111;
+        scroll-behavior: smooth;
+      }
+      header {
+        background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e');
+        background-size: cover;
+        background-position: center;
+        height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        position: relative;
+      }
+      header::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        z-index: 1;
+      }
+      header h1 {
+        position: relative;
+        z-index: 2;
+        font-size: 2.5rem;
+        text-align: center;
+      }
+      .timeline {
+        position: relative;
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      .timeline::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 100%;
+        background-color: #ddd;
+      }
+      .event {
+        position: relative;
+        margin: 2rem 0;
+        padding: 1rem;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: background 0.3s;
+      }
+      .event::before {
+        content: '';
+        position: absolute;
+        top: 1.5rem;
+        left: -0.5rem;
+        width: 1rem;
+        height: 1rem;
+        background-color: #111;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        z-index: 2;
+      }
+      .event.past {
+        opacity: 0.4;
+        text-decoration: line-through;
+      }
+      .event h2 {
+        margin-bottom: 0.5rem;
+        font-size: 1.2rem;
+      }
+      .event p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
+      .map-link {
+        display: block;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: #0066cc;
+        text-decoration: underline;
+      }
+      iframe.map {
+        width: 100%;
+        height: 300px;
+        border: none;
+        margin: 2rem 0;
+        border-radius: 10px;
+      }
+      @media screen and (max-width: 600px) {
+        header h1 {
+          font-size: 1.8rem;
+          padding: 0 1rem;
+        }
+        .event {
+          margin: 1.5rem 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Rachel & Zach's Lisbon Crawl</h1>
+    </header>
 
-    renderItinerary();
-    updateCountdown();
-  </script>
-</body>
+    <div class="timeline" id="timeline"></div>
+
+    <iframe
+      class="map"
+      src="https://www.google.com/maps/d/embed?mid=1a6c3XYZ_CUSTOM_MAP_ID"
+      allowfullscreen
+    ></iframe>
+
+    <script>
+      const stops = [
+        {
+          time: "13:00",
+          title: "Rossio Gastrobar",
+          desc: "Kick off with a welcome drink on a rooftop terrace. Great views of downtown.",
+          maps: "https://maps.google.com/?q=Rossio+Gastrobar"
+        },
+        {
+          time: "13:50",
+          title: "Praça da Figueira & Rossio Square",
+          desc: "Explore Lisbon’s bustling historical squares.",
+          maps: "https://maps.google.com/?q=Praça+da+Figueira"
+        },
+        {
+          time: "14:10",
+          title: "Manteigaria",
+          desc: "Grab Lisbon’s best custard tart—quick, warm, and unforgettable.",
+          maps: "https://maps.google.com/?q=Manteigaria"
+        },
+        {
+          time: "14:35",
+          title: "Rua Augusta Arch & Praça do Comércio",
+          desc: "Walk through Lisbon’s grand pedestrian street down to the waterfront arch.",
+          maps: "https://maps.google.com/?q=Rua+Augusta+Arch"
+        },
+        {
+          time: "15:20",
+          title: "Miradouro das Portas do Sol",
+          desc: "Iconic viewpoint over Alfama’s rooftops and the Tagus River.",
+          maps: "https://maps.google.com/?q=Miradouro+das+Portas+do+Sol"
+        },
+        {
+          time: "16:05",
+          title: "Lumi Rooftop Bar",
+          desc: "Relax with a drink at this scenic spot with 360° views.",
+          maps: "https://maps.google.com/?q=Lumi+Rooftop+Bar"
+        },
+        {
+          time: "16:55",
+          title: "Miradouro de São Pedro de Alcântara",
+          desc: "Panoramic views of the city, castle, and a great spot for photos.",
+          maps: "https://maps.google.com/?q=Miradouro+de+São+Pedro+de+Alcântara"
+        },
+        {
+          time: "17:35",
+          title: "Scenic Walk through Bairro Alto",
+          desc: "Leisurely stroll through Lisbon’s artistic and historic neighborhood.",
+          maps: "https://maps.google.com/?q=Bairro+Alto"
+        },
+        {
+          time: "18:00",
+          title: "Quiosque Ribeira das Naus",
+          desc: "Sunset drink along the water—golden hour magic.",
+          maps: "https://maps.google.com/?q=Quiosque+Ribeira+das+Naus"
+        },
+        {
+          time: "18:55",
+          title: "Time Out Market",
+          desc: "Dinner at 7:00 PM—choose from the city’s best vendors under one roof.",
+          maps: "https://maps.google.com/?q=Time+Out+Market"
+        }
+      ];
+
+      const timeline = document.getElementById("timeline");
+
+      function parseTimeToMinutes(timeStr) {
+        const [hours, minutes] = timeStr.split(":").map(Number);
+        return hours * 60 + minutes;
+      }
+
+      function getCurrentLisbonTimeInMinutes() {
+        const now = new Date();
+        const utc = now.getTime() + now.getTimezoneOffset() * 60000;
+        const lisbonOffset = 1; // Lisbon is UTC+1 in September
+        const lisbonTime = new Date(utc + 3600000 * lisbonOffset);
+        return lisbonTime.getHours() * 60 + lisbonTime.getMinutes();
+      }
+
+      function renderTimeline() {
+        const nowMinutes = getCurrentLisbonTimeInMinutes();
+        timeline.innerHTML = "";
+
+        stops.forEach((stop) => {
+          const stopMinutes = parseTimeToMinutes(stop.time);
+          const div = document.createElement("div");
+          div.className = "event" + (stopMinutes <= nowMinutes ? " past" : "");
+          div.innerHTML = `
+            <h2>${stop.time} – ${stop.title}</h2>
+            <p>${stop.desc}</p>
+            <a class="map-link" href="${stop.maps}" target="_blank">Google Maps</a>
+          `;
+          timeline.appendChild(div);
+        });
+      }
+
+      renderTimeline();
+      setInterval(renderTimeline, 60000);
+    </script>
+  </body>
 </html>
