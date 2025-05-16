@@ -110,6 +110,15 @@
         margin: 2rem 0;
         border-radius: 10px;
       }
+      .summary-box {
+        background-color: #f5f5f5;
+        padding: 1.5rem;
+        max-width: 600px;
+        margin: 2rem auto;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        font-size: 1rem;
+      }
       @media screen and (max-width: 600px) {
         header h1 {
           font-size: 1.8rem;
@@ -125,6 +134,10 @@
     <header>
       <h1>Rachel & Zach's Lisbon Crawl</h1>
     </header>
+
+    <div class="summary-box">
+      We’ll be walking ~3.6 miles throughout the crawl (bring comfy shoes!) and have two drink stops + one dinner.
+    </div>
 
     <div class="timeline" id="timeline"></div>
 
@@ -201,7 +214,7 @@
       const timeline = document.getElementById("timeline");
 
       function parseTimeToMinutes(timeStr) {
-        const [hours, minutes] = timeStr.split(":").map(Number);
+        const [hours, minutes] = timeStr.split(":" ).map(Number);
         return hours * 60 + minutes;
       }
 
