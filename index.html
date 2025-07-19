@@ -2,113 +2,164 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lisbon Bar Crawl</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lisbon Bar Crawl 🍸</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --accent: #E57A44;
+      --bg: #FFF6EB;
+      --text: #2E2E2E;
+    }
     body {
       margin: 0;
-      font-family: 'Open Sans', sans-serif;
-      background-color: #fff;
-      color: #333;
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
     }
-
-    .hero {
-      background: url('https://i.pinimg.com/736x/c7/32/83/c73283d6763b0bf21aff0305d742940d.jpg') center/cover no-repeat;
-      height: 90vh;
+    header {
+      position: relative;
+      height: 80vh;
+      background: url('https://i.pinimg.com/1200x/c3/79/9a/c3799a3ecaa774a9ca849aa376ada6cd.jpg') center/cover no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      color: white;
-      position: relative;
     }
-
-    .overlay {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+    header::before {
+      content: "";
+      position: absolute; inset: 0;
       background: rgba(0, 0, 0, 0.4);
-      z-index: 1;
     }
-
-    .hero-content {
+    header h1 {
       position: relative;
-      z-index: 2;
-    }
-
-    h1 {
+      margin: 0;
       font-family: 'Playfair Display', serif;
-      font-size: 3em;
-      margin: 0.2em 0;
+      font-size: 3rem;
+      color: white;
+      text-align: center;
     }
-
-    .section {
-      padding: 60px 20px;
-      max-width: 800px;
-      margin: auto;
+    .container {
+      max-width: 800px; margin: auto;
+      padding: 2rem 1rem;
     }
-
-    h2 {
-      font-size: 1.8em;
+    .welcome {
+      background: white;
+      border-left: 6px solid var(--accent);
+      padding: 1rem;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .timeline {
+      margin-top: 2rem;
+    }
+    .stop {
+      position: relative;
+      margin-bottom: 1.8rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: background 0.3s;
+    }
+    .stop.current { background: #FFE8D6; border-left: 6px solid var(--accent); }
+    .stop.past {
+      opacity: 0.5;
+      text-decoration: line-through;
+    }
+    .stop h3 {
+      margin: 0 0 0.4rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      color: var(--accent);
+    }
+    .meta {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+    .desc {
+      margin-bottom: 0.5rem;
+    }
+    .link {
+      color: var(--accent);
+      text-decoration: none;
       font-weight: 600;
-      margin-bottom: 0.4em;
     }
-
-    .schedule-item {
-      margin-bottom: 1.5em;
-    }
-
-    .time {
-      font-weight: 600;
-      color: #a83f61;
-    }
-
-    .location {
-      font-style: italic;
+    .link:hover { text-decoration: underline; }
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      font-size: 0.9rem;
       color: #555;
-    }
-
-    @media (max-width: 600px) {
-      h1 { font-size: 2em; }
-      h2 { font-size: 1.5em; }
     }
   </style>
 </head>
 <body>
-  <div class="hero">
-    <div class="overlay"></div>
-    <div class="hero-content">
-      <h1>Lisbon Bar Crawl</h1>
-      <p>Join us for a playful, chic evening out before the big day</p>
+  <header><h1>Lisbon Bar Crawl 🍸</h1></header>
+  <div class="container">
+    <div class="welcome">
+      <h2>Welcome!</h2>
+      <p>We're kicking off the wedding weekend with a stylish bar crawl through Lisbon — playful vibes, chic venues, and special moments in between. Dress cute and comfy, bring your spirit, and let’s make memories!</p>
     </div>
+
+    <div class="timeline" id="timeline"></div>
   </div>
 
-  <div class="section">
-    <h2>Welcome</h2>
-    <p>We’re kicking off the wedding week with a night out in Lisbon — good drinks, great people, and a few unexpected stops. Dress cute but comfy (we’ll be walking!), and bring your best vibes. Everyone’s invited and the first round’s on us 🍸</p>
-  </div>
+  <footer>
+    🥂 Can’t wait to celebrate with you at the wedding! <br>
+    <strong>Rachel & Zach • Sept 23, 2025</strong>
+  </footer>
 
-  <div class="section">
-    <h2>Schedule</h2>
+  <script>
+    const stops = [
+      { time: "13:00", name: "Rossio Gastrobar", desc: "Kick off with a welcome drink on a rooftop terrace. Great views downtown.", dist: "0.2 mi", dur: "45 min", loc: "https://maps.google.com/?q=Rossio+Gastrobar" },
+      { time: "13:50", name: "Praça da Figueira & Rossio Square", desc: "Explore Lisbon’s bustling historical squares.", dist: "0.1 mi", dur: "15 min", loc: "https://maps.google.com/?q=Praça+da+Figueira" },
+      { time: "14:10", name: "Manteigaria (Pastel de Nata)", desc: "Grab Lisbon’s best custard tart—quick, warm, unforgettable.", dist: "0.5 mi", dur: "15 min", loc: "https://maps.google.com/?q=Manteigaria" },
+      { time: "14:35", name: "Rua Augusta Arch & Praça do Comércio", desc: "Walk through Lisbon’s grand pedestrian street down to the waterfront arch.", dist: "0.6 mi", dur: "30 min", loc: "https://maps.google.com/?q=Rua+Augusta+Arch" },
+      { time: "15:20", name: "Miradouro das Portas do Sol", desc: "Iconic viewpoint over Alfama’s rooftops & the Tagus River.", dist: "0.6 mi uphill", dur: "30 min", loc: "https://maps.google.com/?q=Miradouro+das+Portas+do+Sol" },
+      { time: "16:05", name: "Lumi Rooftop Bar", desc: "Relax with a drink at this scenic spot with 360° views.", dist: "0.4 mi", dur: "45 min", loc: "https://maps.google.com/?q=Lumi+Rooftop+Bar" },
+      { time: "16:55", name: "Miradouro de São Pedro de Alcântara", desc: "Panoramic views of the city, castle, and great photo spot.", dist: "0.5 mi", dur: "25 min", loc: "https://maps.google.com/?q=Miradouro+de+São+Pedro+de+Alcântara" },
+      { time: "17:35", name: "Scenic Walk through Bairro Alto", desc: "Leisurely stroll through Lisbon’s artistic and historic neighborhood.", dist: "0.4 mi", dur: "20 min", loc: "https://maps.google.com/?q=Bairro+Alto" },
+      { time: "18:00", name: "Quiosque Ribeira das Naus", desc: "Sunset drink along the water—golden hour magic.", dist: "0.2 mi", dur: "50 min", loc: "https://maps.google.com/?q=Quiosque+Ribeira+das+Naus" },
+      { time: "18:55", name: "Time Out Market", desc: "Dinner at 7:00 PM—choose from the city’s best vendors under one roof.", dist: "-", dur: "Until end", loc: "https://maps.google.com/?q=Time+Out+Market" }
+    ];
 
-    <div class="schedule-item">
-      <div class="time">7:00 PM – Start</div>
-      <div class="location">Pensão Amor – Pink Street</div>
-      <p>A vibey, velvet-filled former brothel turned cocktail bar. Very on brand.</p>
-    </div>
+    function timeToMinutes(t) {
+      const [h, m] = t.split(':').map(Number); return h*60 + m;
+    }
 
-    <div class="schedule-item">
-      <div class="time">8:30 PM – Round Two</div>
-      <div class="location">Foxtrot Bar</div>
-      <p>A speakeasy tucked into a townhouse. Old-school cocktails + low-key glam.</p>
-    </div>
+    function nowLisbon() {
+      const d = new Date();
+      const utc = d.getTime() + d.getTimezoneOffset()*60000;
+      return new Date(utc + 3600000); // UTC+1
+    }
 
-    <div class="schedule-item">
-      <div class="time">10:00 PM – Late Night</div>
-      <div class="location">Park Bar</div>
-      <p>Rooftop views, Lisbon lights, and a DJ if we’re lucky. Let’s dance.</p>
-    </div>
-  </div>
+    function render() {
+      const now = nowLisbon();
+      const nowM = now.getHours()*60 + now.getMinutes();
+
+      const container = document.getElementById('timeline');
+      container.innerHTML = '';
+
+      stops.forEach(s => {
+        const el = document.createElement('div');
+        el.className = 'stop';
+        const sM = timeToMinutes(s.time);
+        if (sM < nowM) el.classList.add('past');
+        else if (sM <= nowM + Number(s.dur), true) el.classList.add('current');
+
+        el.innerHTML = `
+          <h3>${s.name}</h3>
+          <div class="meta">${s.time} • ${s.dist} • ${s.dur}</div>
+          <p class="desc">${s.desc}</p>
+          <a class="link" href="${s.loc}" target="_blank">Directions →</a>
+        `;
+        container.appendChild(el);
+      });
+    }
+
+    render();
+    setInterval(render, 60000);
+  </script>
 </body>
 </html>
